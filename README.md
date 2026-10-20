@@ -135,28 +135,28 @@ Clicking any card smoothly triggers a slide-over panel that preserves the surrou
 
 ```mermaid
 flowchart TD
-    subgraph Browser ["Web Client (Next.js 14 Client Components)"]
-        UI["React 18 UI (Tailwind + Lucide)"]
-        State["Zustand / Optimistic React State"]
-        Audio["Web Audio API & Confetti"]
+    subgraph Browser["Web Client - Next.js 14 Client Components"]
+        UI["React 18 UI - Tailwind and Lucide"]
+        State["Optimistic React State"]
+        Audio["Web Audio API and Confetti"]
         SocketClient["Socket.io Client 4.8"]
     end
 
-    subgraph ServerRuntime ["Unified Node.js Engine (server.ts)"]
-        NextServer["Next.js App Router (RSC & API Handlers)"]
+    subgraph ServerRuntime["Unified Node.js Engine - server.ts"]
+        NextServer["Next.js App Router - RSC and API Handlers"]
         SocketServer["Socket.io WebSocket Server"]
-        AuthMiddleware["JWT Cookie Validator (jose)"]
+        AuthMiddleware["JWT Cookie Validator - jose"]
     end
 
-    subgraph DataLayer ["Persistence & ORM"]
+    subgraph DataLayer["Persistence and ORM Layer"]
         Prisma["Prisma ORM Client 5.22"]
-        SQLite[("SQLite dev.db (Default)")]
-        Postgres[("PostgreSQL (Production)")]
+        SQLite[("SQLite dev.db - Default")]
+        Postgres[("PostgreSQL - Production")]
     end
 
-    UI -->|HTTP Fetch + JWT Cookie| NextServer
+    UI -->|HTTP Fetch and JWT Cookie| NextServer
     UI -->|Events: join, viewing| SocketClient
-    SocketClient <-->|Bi-Directional WebSocket| SocketServer
+    SocketClient <--> |Bi-Directional WebSocket| SocketServer
     NextServer -->|Trigger Room Broadcast| SocketServer
     NextServer --> AuthMiddleware
     AuthMiddleware --> Prisma
@@ -194,21 +194,21 @@ sequenceDiagram
 
 ```mermaid
 erDiagram
-    User ||--o{ Project : "owns"
-    User ||--o{ ProjectMember : "belongs to"
-    User ||--o{ Task : "assigned"
-    User ||--o{ Comment : "authors"
-    User ||--o{ Notification : "receives"
+    User ||--o{ Project : owns
+    User ||--o{ ProjectMember : belongs_to
+    User ||--o{ Task : assigned_to
+    User ||--o{ Comment : authors
+    User ||--o{ Notification : receives
 
-    Project ||--o{ ProjectMember : "includes"
-    Project ||--o{ Task : "contains"
-    Project ||--o{ Notification : "references"
+    Project ||--o{ ProjectMember : includes
+    Project ||--o{ Task : contains
+    Project ||--o{ Notification : references
 
-    Task ||--o{ Comment : "has"
+    Task ||--o{ Comment : has
 
     User {
         string id PK
-        string email UK
+        string email
         string name
         string passwordHash
         datetime createdAt
@@ -221,6 +221,14 @@ erDiagram
         string ownerId FK
         datetime createdAt
         datetime updatedAt
+    }
+
+    ProjectMember {
+        string id PK
+        string projectId FK
+        string userId FK
+        string role
+        datetime createdAt
     }
 
     Task {
@@ -242,6 +250,17 @@ erDiagram
         string content
         string taskId FK
         string authorId FK
+        datetime createdAt
+    }
+
+    Notification {
+        string id PK
+        string userId FK
+        string projectId FK
+        string taskId FK
+        string type
+        string message
+        boolean read
         datetime createdAt
     }
 ```
