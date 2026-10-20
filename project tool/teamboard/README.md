@@ -188,7 +188,11 @@ npm run typecheck
 npx tsx scripts/run-qa-suite.ts
 ```
 
+> 📑 **Read the complete verification report and inspect all generated visual proof deliverables:**  
+> **[TeamBoard QA Verification & Audit Report](./teamboard_qa_audit_report.md)**
+
 ---
 
 ## 📄 License
 MIT License.
+
